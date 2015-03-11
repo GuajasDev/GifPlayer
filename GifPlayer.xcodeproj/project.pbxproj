@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D484BB441AAE6ACE00A97FAC /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */; };
+		D4C69F2C1AAFFEF600509116 /* Loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = D4C69F2B1AAFFEF600509116 /* Loading.gif */; };
 		D4E58D001AAE65A000A6214E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E58CFF1AAE65A000A6214E /* AppDelegate.swift */; };
 		D4E58D031AAE65A000A6214E /* GifPlayer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D4E58D011AAE65A000A6214E /* GifPlayer.xcdatamodeld */; };
 		D4E58D051AAE65A000A6214E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E58D041AAE65A000A6214E /* ViewController.swift */; };
@@ -31,6 +32,7 @@
 		D484BB411AAE6ACE00A97FAC /* GifPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GifPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		D484BB421AAE6ACE00A97FAC /* UIImage+animatedGIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+animatedGIF.h"; sourceTree = "<group>"; };
 		D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+animatedGIF.m"; sourceTree = "<group>"; };
+		D4C69F2B1AAFFEF600509116 /* Loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Loading.gif; sourceTree = "<group>"; };
 		D4E58CFA1AAE65A000A6214E /* GifPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GifPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4E58CFE1AAE65A000A6214E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D4E58CFF1AAE65A000A6214E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				D4E58D091AAE65A000A6214E /* Images.xcassets */,
 				D4E58D0B1AAE65A000A6214E /* LaunchScreen.xib */,
 				D4E58D011AAE65A000A6214E /* GifPlayer.xcdatamodeld */,
+				D4C69F2B1AAFFEF600509116 /* Loading.gif */,
 				D4E58CFD1AAE65A000A6214E /* Supporting Files */,
 				D484BB411AAE6ACE00A97FAC /* GifPlayer-Bridging-Header.h */,
 			);
@@ -203,6 +206,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4E58D081AAE65A000A6214E /* Main.storyboard in Resources */,
+				D4C69F2C1AAFFEF600509116 /* Loading.gif in Resources */,
 				D4E58D0D1AAE65A000A6214E /* LaunchScreen.xib in Resources */,
 				D4E58D0A1AAE65A000A6214E /* Images.xcassets in Resources */,
 			);
