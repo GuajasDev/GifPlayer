@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D484BB441AAE6ACE00A97FAC /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */; };
 		D4C69F2C1AAFFEF600509116 /* Loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = D4C69F2B1AAFFEF600509116 /* Loading.gif */; };
+		D4D4C0961AB14F9500DD4D01 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D4C0951AB14F9500DD4D01 /* Photos.framework */; };
 		D4E58D001AAE65A000A6214E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E58CFF1AAE65A000A6214E /* AppDelegate.swift */; };
 		D4E58D031AAE65A000A6214E /* GifPlayer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D4E58D011AAE65A000A6214E /* GifPlayer.xcdatamodeld */; };
 		D4E58D051AAE65A000A6214E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E58D041AAE65A000A6214E /* ViewController.swift */; };
@@ -33,6 +34,7 @@
 		D484BB421AAE6ACE00A97FAC /* UIImage+animatedGIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+animatedGIF.h"; sourceTree = "<group>"; };
 		D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+animatedGIF.m"; sourceTree = "<group>"; };
 		D4C69F2B1AAFFEF600509116 /* Loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Loading.gif; sourceTree = "<group>"; };
+		D4D4C0951AB14F9500DD4D01 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		D4E58CFA1AAE65A000A6214E /* GifPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GifPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4E58CFE1AAE65A000A6214E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D4E58CFF1AAE65A000A6214E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -51,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4D4C0961AB14F9500DD4D01 /* Photos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +70,7 @@
 		D4E58CF11AAE65A000A6214E = {
 			isa = PBXGroup;
 			children = (
+				D4D4C0951AB14F9500DD4D01 /* Photos.framework */,
 				D4E58CFC1AAE65A000A6214E /* GifPlayer */,
 				D4E58D151AAE65A100A6214E /* GifPlayerTests */,
 				D4E58CFB1AAE65A000A6214E /* Products */,
@@ -306,7 +310,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -344,7 +348,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -358,7 +362,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = GifPlayer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "GifPlayer/GifPlayer-Bridging-Header.h";
@@ -372,7 +376,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = GifPlayer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "GifPlayer/GifPlayer-Bridging-Header.h";
