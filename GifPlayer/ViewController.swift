@@ -14,6 +14,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     @IBOutlet weak var dataImageView: UIImageView!
     
+    var thisGIFItem:GIFItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -21,6 +23,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let path = NSBundle.mainBundle().pathForResource("Loading", ofType: "gif")
         if let path = path {
             let url = NSURL(fileURLWithPath: path)!
+            println(NSData(data: self.thisGIFItem.image))
+            println("\n----------\n")
+            println(NSData(contentsOfURL: url))
+//            var testImage = UIImage.animatedImageWithAnimatedGIFData(NSData(data: self.thisGIFItem.image))
             var testImage = UIImage.animatedImageWithAnimatedGIFData(NSData(contentsOfURL: url))
             self.dataImageView.animationImages = testImage.images
             self.dataImageView.animationDuration = testImage.duration
@@ -36,58 +42,39 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     @IBAction func syncButtonPressed(sender: UIButton) {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary) {
-            // The photo library is available
-            
-//            var photoLibraryController = UIImagePickerController()
-//            // Thanks to the delegate we will be able to know which photos the user is tapping on inside our photo library
-//            photoLibraryController.delegate = self
-//            photoLibraryController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-//            
-//            // Specify the media types for our media controller, in our case it is media data
-//            let mediaTypes:[AnyObject] = [kUTTypeImage]
-//            photoLibraryController.mediaTypes = mediaTypes
-//            photoLibraryController.allowsEditing = false
-            
-            self.dataImageView.stopAnimating()
-            
-            var asset = PHAsset()
-            
-            PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-//                let url = NSURL(fileURLWithPath: "assets-library://asset/asset.JPG?id=AC072879-DA36-4A56-8A04-4D467C878877&ext=JPG")
-                let url = NSURL(string: "assets-library://asset/asset.JPG?id=AC072879-DA36-4A56-8A04-4D467C878877&ext=JPG")
-                var fetchResult = PHFetchResult()
-//                fetchResult = PHAsset.fetchAssetsWithALAssetURLs([url as AnyObject!], options: nil)
-                fetchResult = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
-                asset = fetchResult[1] as PHAsset
-                println("\(asset) -------")
-                
-                for var indx:Int = 0; indx < fetchResult.count; indx++ {
-                    asset = fetchResult[indx] as PHAsset
-                    self.otherMethod(asset)
-                }
-                
-                
-            }, completionHandler: { (success, error) -> Void in
-//                println("Error \(error)")
-            })
-            
-            
-
-//            var result = PHFetchResult()
-//            result = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
-//            result.enumerateObjectsUsingBlock({ (asset, indx, stop) -> Void in
-//                
-//
-//            })
-//            
-//            println(result[0])
-            
-            // Present the photo library controller to the screen
-//            self.presentViewController(photoLibraryController, animated: true, completion: nil)
-        } else {
-            println("Error in 0002")
+        // The photo library is available
+        
+        if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Authorized {
+            // The user has granted access to the photo library
+            println("Authorised")
+        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Denied {
+            // The user has denied access to the photo library
+            println("Denied")
+        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Restricted {
+            // Access to the photo library is denied and the user cannot grant such permission
+            println("Restricted")
+        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.NotDetermined {
+            // The user has not determined yet if you can have access to the photo library or not
+            println("Not Determined")
         }
+        
+        self.dataImageView.stopAnimating()
+        
+        var asset = PHAsset()
+        
+        PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
+            var fetchResult = PHFetchResult()
+            fetchResult = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
+            
+            for var indx:Int = 0; indx < fetchResult.count; indx++ {
+                asset = fetchResult[indx] as PHAsset
+                self.otherMethod(asset)
+            }
+            
+            
+            }, completionHandler: { (success, error) -> Void in
+                //                println("Error \(error)")
+        })
     }
     
     func otherMethod(asset: PHAsset) {

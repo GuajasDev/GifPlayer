@@ -17,6 +17,9 @@
 		D4E58D0A1AAE65A000A6214E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4E58D091AAE65A000A6214E /* Images.xcassets */; };
 		D4E58D0D1AAE65A000A6214E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4E58D0B1AAE65A000A6214E /* LaunchScreen.xib */; };
 		D4E58D191AAE65A100A6214E /* GifPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E58D181AAE65A100A6214E /* GifPlayerTests.swift */; };
+		D4E689621AB24EA80019FABD /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E689611AB24EA80019FABD /* CollectionViewController.swift */; };
+		D4E689641AB2504A0019FABD /* GIFItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E689631AB2504A0019FABD /* GIFItem.swift */; };
+		D4E689681AB2543A0019FABD /* GIFCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E689671AB2543A0019FABD /* GIFCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +49,9 @@
 		D4E58D121AAE65A100A6214E /* GifPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GifPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4E58D171AAE65A100A6214E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D4E58D181AAE65A100A6214E /* GifPlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifPlayerTests.swift; sourceTree = "<group>"; };
+		D4E689611AB24EA80019FABD /* CollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
+		D4E689631AB2504A0019FABD /* GIFItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIFItem.swift; sourceTree = "<group>"; };
+		D4E689671AB2543A0019FABD /* GIFCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIFCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,11 +99,12 @@
 				D484BB421AAE6ACE00A97FAC /* UIImage+animatedGIF.h */,
 				D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */,
 				D4E58D041AAE65A000A6214E /* ViewController.swift */,
+				D4E689611AB24EA80019FABD /* CollectionViewController.swift */,
+				D4E689671AB2543A0019FABD /* GIFCollectionViewCell.swift */,
 				D4E58D061AAE65A000A6214E /* Main.storyboard */,
 				D4E58D091AAE65A000A6214E /* Images.xcassets */,
 				D4E58D0B1AAE65A000A6214E /* LaunchScreen.xib */,
-				D4E58D011AAE65A000A6214E /* GifPlayer.xcdatamodeld */,
-				D4C69F2B1AAFFEF600509116 /* Loading.gif */,
+				D4E689651AB250570019FABD /* Model */,
 				D4E58CFD1AAE65A000A6214E /* Supporting Files */,
 				D484BB411AAE6ACE00A97FAC /* GifPlayer-Bridging-Header.h */,
 			);
@@ -107,6 +114,7 @@
 		D4E58CFD1AAE65A000A6214E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D4E689661AB250760019FABD /* Images */,
 				D4E58CFE1AAE65A000A6214E /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -127,6 +135,23 @@
 				D4E58D171AAE65A100A6214E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D4E689651AB250570019FABD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D4E58D011AAE65A000A6214E /* GifPlayer.xcdatamodeld */,
+				D4E689631AB2504A0019FABD /* GIFItem.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		D4E689661AB250760019FABD /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				D4C69F2B1AAFFEF600509116 /* Loading.gif */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -234,6 +259,9 @@
 				D484BB441AAE6ACE00A97FAC /* UIImage+animatedGIF.m in Sources */,
 				D4E58D001AAE65A000A6214E /* AppDelegate.swift in Sources */,
 				D4E58D031AAE65A000A6214E /* GifPlayer.xcdatamodeld in Sources */,
+				D4E689681AB2543A0019FABD /* GIFCollectionViewCell.swift in Sources */,
+				D4E689621AB24EA80019FABD /* CollectionViewController.swift in Sources */,
+				D4E689641AB2504A0019FABD /* GIFItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
