@@ -6,6 +6,13 @@
 //  Copyright (c) 2015 GuajasDev. All rights reserved.
 //
 
+/*
+For the same object, if it is fetched it has URL and if it is picked it has URL2. URL2 id's are unique to each image, fetched are not (that number is not the id), but names are
+URL: file:///Users/diegoguajardo/Library/Developer/CoreSimulator/Devices/34A6CCB2-663A-4598-A6AD-998CFF817E56/data/Media/DCIM/100APPLE/IMG_0008.GIF
+URL2: assets-library://asset/asset.GIF?id=9D1FCBD1-E162-43AE-9DB8-245560D674F4&ext=GIF
+
+*/
+
 import UIKit
 import MobileCoreServices
 import CoreData
@@ -28,12 +35,10 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // MARK: - BODY
     
     // MARK: Initialisers
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-        self.fetchGifItemsFromLibrary()
         
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
@@ -50,8 +55,10 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         // Execute the fetch request and save the AnyObject instances
         self.gifArray = context.executeFetchRequest(request, error: nil)!
+        
+        self.fetchGifItemsFromLibrary()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -110,7 +117,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         let thisItem = self.gifArray[indexPath.row] as GIFItem
         
         cell.imageView.image = UIImage(data: thisItem.thumbImage)
-//        cell.captionLabel.text = thisItem.caption
+        //        cell.captionLabel.text = thisItem.caption
         
         return cell
     }
@@ -126,44 +133,62 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         
-        let url = (info["UIImagePickerControllerReferenceURL"] as NSURL).absoluteString!
+        let url:NSURL = info["UIImagePickerControllerReferenceURL"] as NSURL
+//        let urlString:String = url.absoluteString!
         
-        if url.rangeOfString("ext=GIF") != nil {
-            
-            // Get the managedObjectContext
-            let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
-            
-            // Create an entityDescription
-            let entityDescription = NSEntityDescription.entityForName("GIFItem", inManagedObjectContext: managedObjectContext!)
-            
-            // Create the FeedItem
-            let gifItem = GIFItem(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext!)
-            
-            // info is a dictionary that is passed in the function, we are using the 'UIImagePickerControllerOriginalImage' key to get back the value of the (original) UIImage we want to display
-            let image = info[UIImagePickerControllerOriginalImage] as UIImage
-            
-            // Save the image to CoreData. The image will be converted into a data representation (NSData instance, which is a binary representation) of the UIImage instance
-            // ********** DONT SAVE THE IMAGE DATA, SAVE THE URL **********
-            let imageData = UIImageJPEGRepresentation(image, 0.2)
+        let gifImage:PHAsset = PHAsset.fetchAssetWithALAssetURL(url)!
+        self.saveImageAsset(gifImage)
         
-            gifItem.imageURL = url
-            gifItem.thumbImage = imageData
-            gifItem.selectedFromPicker = true
-            gifItem.imageID = getImageID(gifItem.imageURL)
-            //        gifItem.caption = "Test Caption"
-            (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
-            
-            // Add the feedItem to the feedArray so the user can see the item without having to quit and restart the application
-            self.gifArray.append(gifItem)
-            
-            self.dismissViewControllerAnimated(true, completion: nil)
-            
-            // reload the collectionView data so the user can see the item without having to quit and restart the application
-            self.collectionView.reloadData()
-            
-        } else {
-            println("Not GIF")
+        self.dismissViewControllerAnimated(true, completion: nil)
+        
+        // Loop through all the saved assets. If the name of the asset that was passed equals one that is already saved then it exists already and it is not saved again
+        
+        // **** YOU CAN USE info["UIImagePickerControllerOriginalImage"] TO GET THE ORIGINAL  IMAGE, IF THAT THEN IS TURNED INTO A PHAsset SOMEHOW, YOU CAN GET RID OF ALL THIS CODE AND RUN EVERYTHING WITH THE LOGIC USED IN saveImageAssets ****
+//        for var i:Int = 0; i < self.gifArray.count; i++ {
+//            if imageID == (self.gifArray[i] as GIFItem).imageID {
+//                existsAlready = true
+//            }
+//        }
+/*
+        if existsAlready == false {
+            if urlString.rangeOfString("ext=GIF") != nil {
+                
+                // Get the managedObjectContext
+                let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+                
+                // Create an entityDescription
+                let entityDescription = NSEntityDescription.entityForName("GIFItem", inManagedObjectContext: managedObjectContext!)
+                
+                // Create the FeedItem
+                let gifItem = GIFItem(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext!)
+                
+                // info is a dictionary that is passed in the function, we are using the 'UIImagePickerControllerOriginalImage' key to get back the value of the (original) UIImage we want to display
+                let image = info[UIImagePickerControllerOriginalImage] as UIImage
+                
+                // Save the image to CoreData. The image will be converted into a data representation (NSData instance, which is a binary representation) of the UIImage instance
+                // ********** DONT SAVE THE IMAGE DATA, SAVE THE URL **********
+                let imageData = UIImageJPEGRepresentation(image, 0.2)
+                
+                gifItem.imageURL = urlString
+                gifItem.thumbImage = imageData
+                gifItem.selectedFromPicker = true
+                gifItem.imageID = imageID
+                gifItem.imageCaption = "Picker Test Caption"
+                (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
+                
+                // Add the feedItem to the feedArray so the user can see the item without having to quit and restart the application
+                self.gifArray.append(gifItem)
+                
+                self.dismissViewControllerAnimated(true, completion: nil)
+                
+                // reload the collectionView data so the user can see the item without having to quit and restart the application
+                self.collectionView.reloadData()
+                
+            } else {
+                println("Not GIF")
+            }
         }
+*/
     }
     
     // MARK: Helpers
@@ -174,12 +199,21 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             startOfString = advance(find(url, "=")!, 1)
         }
         else {
-            startOfString = advance(find(url, "-")!, -8)
+            println("Error in 0003")
+            return ""
         }
         let endOfString = advance(startOfString, 36)
         let range = Range<String.Index>(start:startOfString, end:endOfString)
         let localIDFragment = url.substringWithRange(range)
         return localIDFragment
+    }
+    
+    func getImageName(url: String) -> String {
+        var startOfString = advance(url.endIndex, -12)
+        let endOfString = url.endIndex
+        let range = Range<String.Index>(start:startOfString, end:endOfString)
+        let localNameFragment = url.substringWithRange(range)
+        return localNameFragment
     }
     
     func fetchGifItemsFromLibrary() {
@@ -199,19 +233,16 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             println("Not Determined")
         }
         
-//        self.dataImageView.stopAnimating()
-        
         var asset = PHAsset()
         
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
             var fetchResult = PHFetchResult()
             fetchResult = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
             
-            for var indx:Int = 0; indx < fetchResult.count; indx++ {
+            for var indx:Int = 0; indx < 3 /*fetchResult.count*/; indx++ {
                 asset = fetchResult[indx] as PHAsset
                 self.saveImageAsset(asset)
             }
-            
             
             }, completionHandler: { (success, error) -> Void in
                 println("Error \(error)")
@@ -222,48 +253,53 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         let imageRequestOptions = PHImageRequestOptions()
         // When set to false it loads a low-quality image first if there is no high res available in the cache and then runs the completion handler from 'requestImageDataForAsset' again when it can retrieve the high res image. It is faster
         imageRequestOptions.synchronous = false
-
+        
+        // Get the data of the asset that was passed. In here we need to save the imageData and the url returned on the info dictionarry
         PHImageManager.defaultManager().requestImageDataForAsset(asset, options: imageRequestOptions, resultHandler: { (imageData, dataUTI, orientation, info) -> Void in
             
+            // Get the url and the name, initialise a boolean to check if the image already exists in CoreData
             let url = (info["PHImageFileURLKey"] as NSURL).absoluteString!
+            let imageName = self.getImageName(url)
+            var existsAlready = false
             
-            if url.rangeOfString(".GIF") != nil {
-                println("YAY")
-                
-                // Get the managedObjectContext
-                let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
-                
-                // Create an entityDescription
-                let entityDescription = NSEntityDescription.entityForName("GIFItem", inManagedObjectContext: managedObjectContext!)
-                
-                // Create the FeedItem
-                let gifItem = GIFItem(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext!)
-                
-                // info is a dictionary that is passed in the function, we are using the 'UIImagePickerControllerOriginalImage' key to get back the value of the (original) UIImage we want to display
-//                let image = info[UIImagePickerControllerOriginalImage] as UIImage
-                
-                // Save the image to CoreData. The image will be converted into a data representation (NSData instance, which is a binary representation) of the UIImage instance
-                // ********** DONT SAVE THE IMAGE DATA, SAVE THE URL **********
-//                let imageData = UIImageJPEGRepresentation(image, 0.2)
-                
-                gifItem.imageURL = url
-                gifItem.thumbImage = imageData
-                gifItem.selectedFromPicker = false
-                gifItem.imageID = self.getImageID(gifItem.imageURL)
-                // gifItem.caption = "Test Caption"
-                (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
-                
-                // Add the feedItem to the feedArray so the user can see the item without having to quit and restart the application
-                self.gifArray.append(gifItem)
-                
-                self.dismissViewControllerAnimated(true, completion: nil)
-                
-                // reload the collectionView data so the user can see the item without having to quit and restart the application
-                self.collectionView.reloadData()
-                
-            } else {
-                println("NAY")
+            // Loop through all the saved assets. If the name of the asset that was passed equals one that is already saved then it exists already and it is not saved again
+            for var i:Int = 0; i < self.gifArray.count; i++ {
+                if imageName == (self.gifArray[i] as GIFItem).imageName {
+                    existsAlready = true
+                }
             }
+            
+            // If the asset does not exist in Core Data, save it
+            if existsAlready == false {
+                if url.rangeOfString(".GIF") != nil {
+                    
+                    // Get the managedObjectContext
+                    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+                    
+                    // Create an entityDescription
+                    let entityDescription = NSEntityDescription.entityForName("GIFItem", inManagedObjectContext: managedObjectContext!)
+                    
+                    // Create the FeedItem
+                    let gifItem = GIFItem(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext!)
+                    
+                    // Save the required information
+                    gifItem.imageURL = url
+                    gifItem.thumbImage = imageData
+                    gifItem.selectedFromPicker = false
+                    gifItem.imageName = imageName
+                    gifItem.imageCaption = "Fetch Test Caption"
+                    (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
+                    
+                    // Add the gifItem to the gifArray so the user can see the item without having to quit and restart the application
+                    self.gifArray.append(gifItem)
+                    
+                    // reload the collectionView data so the user can see the item without having to quit and restart the application
+                    self.collectionView.reloadData()
+                    
+                } else {
+                    println("NAY")
+                }
+            } else { println("Exists") }
         })
     }
 }

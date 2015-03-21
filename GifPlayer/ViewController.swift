@@ -11,94 +11,85 @@ import MobileCoreServices
 import Photos
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    // MARK: - PROPERTIES
+    
+    // MARK: IBOutlets
 
-    @IBOutlet weak var dataImageView: UIImageView!
+    @IBOutlet weak var gifImageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
+    
+    // MARK: Variables
     
     var thisGIFItem:GIFItem!
+    
+    // MARK: - BODY
+    
+    // MARK: System Funcs
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let url = NSURL(string: self.thisGIFItem.imageURL as String)!
+        self.fetchImageAssetWithURLString(self.thisGIFItem.imageURL)
+        self.titleLabel.text = self.thisGIFItem.imageCaption
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        // Called before the view is dismissed
+        self.gifImageView.stopAnimating()
+    }
+    
+    // MARK: Image Asset Handlers
+    
+    func fetchImageAssetWithURLString(url: String) {
+        
         var gifImage:PHAsset!
         
-        if thisGIFItem.selectedFromPicker == true {
-            // The image was chosen with the UIImagePicker
-            
-            gifImage = PHAsset.fetchAssetWithALAssetURL(url)
-            
-            if gifImage != nil {
-                PHImageManager.defaultManager().requestImageDataForAsset(gifImage, options: nil, resultHandler: { (data:NSData!, string:String!, orientation:UIImageOrientation, object:[NSObject : AnyObject]!) -> Void in
-                    var testImage = UIImage.animatedImageWithAnimatedGIFData(data)
-                    self.dataImageView.animationImages = testImage.images
-                    self.dataImageView.animationDuration = testImage.duration
-                    self.dataImageView.animationRepeatCount = 0
-                    /* If I want the animation to stop in the last frame, set 'animationRepeatCount' to 1 and uncomment this
-                    self.dataImageView.image = testImage.images!.last as! UIImage! */
-                    self.dataImageView.startAnimating()
-                })
-            
-            } else {
-                println("Error in 0001")
-            }
-            
-        } else {
+        if thisGIFItem.selectedFromPicker == false {
             // The image was loaded automatically
             
             PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
+                // Fetch all the images from the photo library
                 var fetchResult = PHFetchResult()
                 fetchResult = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
                 
+                // Loop through all the fetched images. The displayImageAsset will only display the image that correspongs to the
                 for var indx:Int = 0; indx < fetchResult.count; indx++ {
                     gifImage = fetchResult[indx] as PHAsset
-                    self.displayImageAsset(gifImage)
+                    self.displayThisImageAsset(gifImage)
                 }
                 
                 
                 }, completionHandler: { (success, error) -> Void in
                     println("Error \(error)")
             })
-        }
-    }
-
-    @IBAction func syncButtonPressed(sender: UIButton) {
-        // The photo library is available
-        
-        if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Authorized {
-            // The user has granted access to the photo library
-            println("Authorised")
-        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Denied {
-            // The user has denied access to the photo library
-            println("Denied")
-        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Restricted {
-            // Access to the photo library is denied and the user cannot grant such permission
-            println("Restricted")
-        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.NotDetermined {
-            // The user has not determined yet if you can have access to the photo library or not
-            println("Not Determined")
-        }
-        
-        self.dataImageView.stopAnimating()
-        
-        var asset = PHAsset()
-        
-        PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            var fetchResult = PHFetchResult()
-            fetchResult = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
             
-            for var indx:Int = 0; indx < fetchResult.count; indx++ {
-                asset = fetchResult[indx] as PHAsset
-                self.displayImageAsset(asset)
+        } else {
+            // The image was chosen with the UIImagePicker
+            
+            // Transform the URL saved in core data from a String to a NSURL and fetch the image
+            let url = NSURL(string: url as String)!
+            gifImage = PHAsset.fetchAssetWithALAssetURL(url)
+            
+            // If there is actually an image asset, then display it
+            if gifImage != nil {
+                PHImageManager.defaultManager().requestImageDataForAsset(gifImage, options: nil, resultHandler: { (data:NSData!, string:String!, orientation:UIImageOrientation, object:[NSObject : AnyObject]!) -> Void in
+                    self.animateImageWithData(data)
+                })
+                
+            } else {
+                println("Error in 0001")
             }
-            
-            
-            }, completionHandler: { (success, error) -> Void in
-                println("Error \(error)")
-        })
+        }
     }
     
-    func displayImageAsset(asset: PHAsset) {
+    func displayThisImageAsset(asset: PHAsset) {
         let imageRequestOptions = PHImageRequestOptions()
         // When set to false it loads a low-quality image first if there is no high res available in the cache and then runs the completion handler from 'requestImageDataForAsset' again when it can retrieve the high res image. It is faster
         imageRequestOptions.synchronous = false
@@ -108,28 +99,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             let url = (info["PHImageFileURLKey"] as NSURL).absoluteString!
             
             if url == self.thisGIFItem.imageURL {
-                println("YAY")
-                println("////")
-                
-                var testImage = UIImage.animatedImageWithAnimatedGIFData(NSData(data: imageData))
-                self.dataImageView.animationImages = testImage.images
-                self.dataImageView.animationDuration = testImage.duration
-                self.dataImageView.animationRepeatCount = 0
-                /* If I want the animation to stop in the last frame, set 'animationRepeatCount' to 1 and uncomment this
-                self.dataImageView.image = testImage.images!.last as! UIImage! */
-                self.dataImageView.startAnimating()
-                
-            } else {
-                println("NAY")
+                self.animateImageWithData(NSData(data: imageData))
             }
         })
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    // MARK: Helpers
+    
+    func animateImageWithData(imageData: NSData) {
+        var testImage = UIImage.animatedImageWithAnimatedGIFData(imageData)
+        self.gifImageView.animationImages = testImage.images
+        self.gifImageView.animationDuration = testImage.duration
+        self.gifImageView.animationRepeatCount = 0
+        /* If I want the animation to stop in the last frame, set 'animationRepeatCount' to 1 and uncomment this
+        self.gifImageView.image = testImage.images!.last as! UIImage! */
+        self.gifImageView.startAnimating()
     }
 }
+
+// MARK: - PHAsset Class Extension
 
 extension PHAsset {
     class func fetchAssetWithALAssetURL (alURL: NSURL) -> PHAsset? {
