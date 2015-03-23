@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		D46FF61C1ABC0202008273F0 /* GIFItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46FF61B1ABC0202008273F0 /* GIFItem.swift */; };
 		D484BB441AAE6ACE00A97FAC /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */; };
+		D48C9E211ABFEA770049FA5F /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D48C9E201ABFEA770049FA5F /* Icon.png */; };
 		D4B47F681ABB84A000899EFF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4B47F671ABB84A000899EFF /* Main.storyboard */; };
-		D4C69F2C1AAFFEF600509116 /* Loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = D4C69F2B1AAFFEF600509116 /* Loading.gif */; };
 		D4D4C0961AB14F9500DD4D01 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D4C0951AB14F9500DD4D01 /* Photos.framework */; };
 		D4E58D001AAE65A000A6214E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E58CFF1AAE65A000A6214E /* AppDelegate.swift */; };
 		D4E58D031AAE65A000A6214E /* GifPlayer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D4E58D011AAE65A000A6214E /* GifPlayer.xcdatamodeld */; };
@@ -37,8 +37,8 @@
 		D484BB411AAE6ACE00A97FAC /* GifPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GifPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		D484BB421AAE6ACE00A97FAC /* UIImage+animatedGIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+animatedGIF.h"; sourceTree = "<group>"; };
 		D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+animatedGIF.m"; sourceTree = "<group>"; };
+		D48C9E201ABFEA770049FA5F /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		D4B47F671ABB84A000899EFF /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		D4C69F2B1AAFFEF600509116 /* Loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Loading.gif; sourceTree = "<group>"; };
 		D4D4C0951AB14F9500DD4D01 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		D4E58CFA1AAE65A000A6214E /* GifPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GifPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4E58CFE1AAE65A000A6214E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -76,7 +76,6 @@
 		D4E58CF11AAE65A000A6214E = {
 			isa = PBXGroup;
 			children = (
-				D4D4C0951AB14F9500DD4D01 /* Photos.framework */,
 				D4E58CFC1AAE65A000A6214E /* GifPlayer */,
 				D4E58D151AAE65A100A6214E /* GifPlayerTests */,
 				D4E58CFB1AAE65A000A6214E /* Products */,
@@ -104,7 +103,6 @@
 				D4B47F671ABB84A000899EFF /* Main.storyboard */,
 				D4E58D091AAE65A000A6214E /* Images.xcassets */,
 				D4E58D0B1AAE65A000A6214E /* LaunchScreen.xib */,
-				D4C69F2B1AAFFEF600509116 /* Loading.gif */,
 				D4E689651AB250570019FABD /* Model */,
 				D4E58CFD1AAE65A000A6214E /* Supporting Files */,
 				D484BB411AAE6ACE00A97FAC /* GifPlayer-Bridging-Header.h */,
@@ -115,6 +113,7 @@
 		D4E58CFD1AAE65A000A6214E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D4D4C0951AB14F9500DD4D01 /* Photos.framework */,
 				D4E689661AB250760019FABD /* Images */,
 				D4E58CFE1AAE65A000A6214E /* Info.plist */,
 			);
@@ -150,6 +149,7 @@
 		D4E689661AB250760019FABD /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				D48C9E201ABFEA770049FA5F /* Icon.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -203,6 +203,7 @@
 				TargetAttributes = {
 					D4E58CF91AAE65A000A6214E = {
 						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = 7Q93UA28F8;
 					};
 					D4E58D111AAE65A100A6214E = {
 						CreatedOnToolsVersion = 6.3;
@@ -234,8 +235,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4C69F2C1AAFFEF600509116 /* Loading.gif in Resources */,
 				D4E58D0D1AAE65A000A6214E /* LaunchScreen.xib in Resources */,
+				D48C9E211ABFEA770049FA5F /* Icon.png in Resources */,
 				D4E58D0A1AAE65A000A6214E /* Images.xcassets in Resources */,
 				D4B47F681ABB84A000899EFF /* Main.storyboard in Resources */,
 			);

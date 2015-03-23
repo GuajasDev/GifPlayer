@@ -6,13 +6,6 @@
 //  Copyright (c) 2015 GuajasDev. All rights reserved.
 //
 
-/*
-For the same object, if it is fetched it has URL and if it is picked it has URL2. URL2 id's are unique to each image, fetched are not (that number is not the id), but names are
-URL: file:///Users/diegoguajardo/Library/Developer/CoreSimulator/Devices/34A6CCB2-663A-4598-A6AD-998CFF817E56/data/Media/DCIM/100APPLE/IMG_0008.GIF
-URL2: assets-library://asset/asset.GIF?id=9D1FCBD1-E162-43AE-9DB8-245560D674F4&ext=GIF
-
-*/
-
 import UIKit
 import MobileCoreServices
 import CoreData
@@ -42,6 +35,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
+        self.collectionView.backgroundColor = UIColor.whiteColor()
+        self.navigationController?.toolbarHidden = true
         
         // We are doing the fetch request manually rather than using the NSFetchResultsController manage this for us as in TaskIt mainly to practice both ways
         // Request all the FeedItems we have saved
@@ -56,6 +51,22 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         // Execute the fetch request and save the AnyObject instances
         self.gifArray = context.executeFetchRequest(request, error: nil)!
         
+        // Check if the photo library is available
+        if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Authorized {
+            // The user has granted access to the photo library
+            println("Authorised")
+        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Denied {
+            // The user has denied access to the photo library
+            println("Denied")
+        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Restricted {
+            // Access to the photo library is denied and the user cannot grant such permission
+            println("Restricted")
+        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.NotDetermined {
+            // The user has not determined yet if you can have access to the photo library or not
+            println("Not Determined")
+        }
+        
+        // Fetch the items from the photo library
         self.fetchGifItemsFromLibrary()
     }
     
@@ -70,6 +81,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         if segue.identifier == "toMainVC" {
             var mainVC:ViewController = segue.destinationViewController as ViewController
             mainVC.thisGIFItem = sender as GIFItem
+            self.navigationController?.toolbarHidden = false
         }
     }
     
@@ -91,9 +103,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             
             // Present the photo library controller to the screen
             self.presentViewController(photoLibraryController, animated: true, completion: nil)
-        } else {
-            // Neither the camera nor the photo library are available
             
+        } else {
+            // The photo library is not available
             var alertController = UIAlertController(title: "Alert", message: "Your device does not support the camera or photo library. Please check in Settings if they are enabled for this application", preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alertController, animated: true, completion: nil)
@@ -117,7 +129,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         let thisItem = self.gifArray[indexPath.row] as GIFItem
         
         cell.imageView.image = UIImage(data: thisItem.thumbImage)
-        //        cell.captionLabel.text = thisItem.caption
         
         return cell
     }
@@ -132,83 +143,20 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // MARK: UIImagePickerControllerDelegaate
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        
+        // Get the url of the image that was chosen
         let url:NSURL = info["UIImagePickerControllerReferenceURL"] as NSURL
-//        let urlString:String = url.absoluteString!
         
+        // Create a PHAsset using the image url and save it. The saveGIFImageAsset checks if the image has already been saved or not
         let gifImage:PHAsset = PHAsset.fetchAssetWithALAssetURL(url)!
-        self.saveImageAsset(gifImage)
+        self.saveGIFImageAsset(gifImage)
         
         self.dismissViewControllerAnimated(true, completion: nil)
-        
-        // Loop through all the saved assets. If the name of the asset that was passed equals one that is already saved then it exists already and it is not saved again
-        
-        // **** YOU CAN USE info["UIImagePickerControllerOriginalImage"] TO GET THE ORIGINAL  IMAGE, IF THAT THEN IS TURNED INTO A PHAsset SOMEHOW, YOU CAN GET RID OF ALL THIS CODE AND RUN EVERYTHING WITH THE LOGIC USED IN saveImageAssets ****
-//        for var i:Int = 0; i < self.gifArray.count; i++ {
-//            if imageID == (self.gifArray[i] as GIFItem).imageID {
-//                existsAlready = true
-//            }
-//        }
-/*
-        if existsAlready == false {
-            if urlString.rangeOfString("ext=GIF") != nil {
-                
-                // Get the managedObjectContext
-                let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
-                
-                // Create an entityDescription
-                let entityDescription = NSEntityDescription.entityForName("GIFItem", inManagedObjectContext: managedObjectContext!)
-                
-                // Create the FeedItem
-                let gifItem = GIFItem(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext!)
-                
-                // info is a dictionary that is passed in the function, we are using the 'UIImagePickerControllerOriginalImage' key to get back the value of the (original) UIImage we want to display
-                let image = info[UIImagePickerControllerOriginalImage] as UIImage
-                
-                // Save the image to CoreData. The image will be converted into a data representation (NSData instance, which is a binary representation) of the UIImage instance
-                // ********** DONT SAVE THE IMAGE DATA, SAVE THE URL **********
-                let imageData = UIImageJPEGRepresentation(image, 0.2)
-                
-                gifItem.imageURL = urlString
-                gifItem.thumbImage = imageData
-                gifItem.selectedFromPicker = true
-                gifItem.imageID = imageID
-                gifItem.imageCaption = "Picker Test Caption"
-                (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
-                
-                // Add the feedItem to the feedArray so the user can see the item without having to quit and restart the application
-                self.gifArray.append(gifItem)
-                
-                self.dismissViewControllerAnimated(true, completion: nil)
-                
-                // reload the collectionView data so the user can see the item without having to quit and restart the application
-                self.collectionView.reloadData()
-                
-            } else {
-                println("Not GIF")
-            }
-        }
-*/
     }
     
     // MARK: Helpers
     
-    func getImageID(url: String) -> String {
-        var startOfString:String.Index
-        if find(url, "=") != nil {
-            startOfString = advance(find(url, "=")!, 1)
-        }
-        else {
-            println("Error in 0003")
-            return ""
-        }
-        let endOfString = advance(startOfString, 36)
-        let range = Range<String.Index>(start:startOfString, end:endOfString)
-        let localIDFragment = url.substringWithRange(range)
-        return localIDFragment
-    }
-    
     func getImageName(url: String) -> String {
+        // URL is of the form 'File: ///Users/diegoguajardo/Library/Developer/CoreSimulator/Devices/34A6CCB2-663A-4598-A6AD-998CFF817E56/data/Media/DCIM/100APPLE/IMG_0008.GIF', so the last 12 characters are the name of the image
         var startOfString = advance(url.endIndex, -12)
         let endOfString = url.endIndex
         let range = Range<String.Index>(start:startOfString, end:endOfString)
@@ -217,39 +165,26 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func fetchGifItemsFromLibrary() {
-        // Check if the photo library is available
-        
-        if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Authorized {
-            // The user has granted access to the photo library
-            println("Authorised")
-        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Denied {
-            // The user has denied access to the photo library
-            println("Denied")
-        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Restricted {
-            // Access to the photo library is denied and the user cannot grant such permission
-            println("Restricted")
-        } else if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.NotDetermined {
-            // The user has not determined yet if you can have access to the photo library or not
-            println("Not Determined")
-        }
         
         var asset = PHAsset()
         
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
+            // Loop through the photo library and fetch all the images
             var fetchResult = PHFetchResult()
             fetchResult = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
             
-            for var indx:Int = 0; indx < 3 /*fetchResult.count*/; indx++ {
+            // For all the fetched images, save the GIF ones
+            for var indx:Int = 0; indx < fetchResult.count; indx++ {
                 asset = fetchResult[indx] as PHAsset
-                self.saveImageAsset(asset)
+                self.saveGIFImageAsset(asset)
             }
             
             }, completionHandler: { (success, error) -> Void in
-                println("Error \(error)")
+                if error != nil { println("Error \(error)") }
         })
     }
     
-    func saveImageAsset(asset: PHAsset) {
+    func saveGIFImageAsset(asset: PHAsset) {
         let imageRequestOptions = PHImageRequestOptions()
         // When set to false it loads a low-quality image first if there is no high res available in the cache and then runs the completion handler from 'requestImageDataForAsset' again when it can retrieve the high res image. It is faster
         imageRequestOptions.synchronous = false

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D98g" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="9nW-ob-dXD">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C2513" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="9nW-ob-dXD">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -40,6 +40,12 @@
                             <constraint firstItem="PXr-9i-mgs" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="109" id="urO-lF-wwO"/>
                         </constraints>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem systemItem="action" id="hkt-ob-66t"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="GLx-S9-w6M"/>
+                        <barButtonItem systemItem="trash" id="cLv-BU-CEE"/>
+                    </toolbarItems>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="gifImageView" destination="PXr-9i-mgs" id="343-7G-s0E"/>
                         <outlet property="titleLabel" destination="Bu9-c9-wCa" id="VWk-CR-vp0"/>
@@ -63,11 +69,11 @@
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="HU6-d9-Qz6">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="fHl-PJ-wyS">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="1" id="fHl-PJ-wyS">
                                     <size key="itemSize" width="93" height="93"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="1" minY="1" maxX="1" maxY="1"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="gifCell" id="7Lm-40-aH8" customClass="GIFCollectionViewCell" customModule="GifPlayer" customModuleProvider="target">
@@ -83,6 +89,7 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="0.0"/>
                                         <connections>
                                             <outlet property="imageView" destination="ZAE-Kv-yAP" id="93P-4b-oJq"/>
                                         </connections>
@@ -92,19 +99,22 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Zke-fO-w3O" firstAttribute="top" secondItem="HU6-d9-Qz6" secondAttribute="bottom" id="0MR-7s-Zuf"/>
-                            <constraint firstItem="HU6-d9-Qz6" firstAttribute="leading" secondItem="Qoz-0w-Yjz" secondAttribute="leadingMargin" constant="-16" id="8Bm-ou-bLn"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="HU6-d9-Qz6" secondAttribute="trailing" constant="-16" id="Mg1-Gk-GeS"/>
-                            <constraint firstItem="HU6-d9-Qz6" firstAttribute="top" secondItem="D6X-r9-Gsx" secondAttribute="bottom" constant="-20" id="sOx-3H-pOG"/>
+                            <constraint firstItem="HU6-d9-Qz6" firstAttribute="top" secondItem="D6X-r9-Gsx" secondAttribute="bottom" constant="-64" id="IJ3-ln-B9b"/>
+                            <constraint firstItem="HU6-d9-Qz6" firstAttribute="leading" secondItem="Qoz-0w-Yjz" secondAttribute="leadingMargin" constant="-16" id="ZMa-CO-9U2"/>
+                            <constraint firstItem="Zke-fO-w3O" firstAttribute="top" secondItem="HU6-d9-Qz6" secondAttribute="bottom" constant="-44" id="eab-8S-JEN"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="HU6-d9-Qz6" secondAttribute="trailing" constant="-16" id="iDY-gU-wkD"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="qzV-lP-5ui">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="bK5-Ea-EmN">
+                        <barButtonItem key="leftBarButtonItem" image=" Settings" id="FxP-xw-1on"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="kmg-aC-dCt">
                             <connections>
-                                <action selector="addBarButtonItemPressed:" destination="egD-fP-8vm" id="Gwj-Xx-H9X"/>
+                                <action selector="addBarButtonItemPressed:" destination="egD-fP-8vm" id="E0H-zW-P9E"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="HU6-d9-Qz6" id="Ki9-4V-Uag"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="toMainVC" id="NbB-Nh-DQF"/>
@@ -112,18 +122,21 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I0O-JB-G5f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1173" y="901"/>
+            <point key="canvasLocation" x="1059" y="901"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="2K1-3p-9Ee">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9nW-ob-dXD" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="9nW-ob-dXD" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Nxx-IJ-tnx">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="yB5-XF-Vt2">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="egD-fP-8vm" kind="relationship" relationship="rootViewController" id="cpp-zl-L8e"/>
                     </connections>
@@ -133,4 +146,7 @@
             <point key="canvasLocation" x="361" y="901"/>
         </scene>
     </scenes>
+    <resources>
+        <image name=" Settings" width="24" height="24"/>
+    </resources>
 </document>
