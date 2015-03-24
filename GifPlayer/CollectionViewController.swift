@@ -10,20 +10,29 @@ import UIKit
 import MobileCoreServices
 import CoreData
 import Photos
+import iAd
 
-class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ADBannerViewDelegate {
     
     // MARK: - PROPERTIES
     
     // MARK: IBOutlets
     
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var iAdBanner: ADBannerView!
     
     // MARK: Variables
     
     // Arrays
     // We use 'AnyObject' because when we 'executeFetchRequest' in viewDidLoad, we get an array with AnyObject instances. We are doing the fetch request manually rather than using the NSFetchResultsController manage this for us as in TaskIt mainly to practice both ways
     var gifArray:[AnyObject] = []
+    var loadingImageView = UIImageView()
+    var updatingLabel = UILabel()
+    var testButton = UIButton()
+    
+    // MARK: Constants
+    
+    let loadingView = UIView()
     
     // MARK: - BODY
     
@@ -35,8 +44,12 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
+        self.iAdBanner.delegate = self
+        self.iAdBanner.alpha = 0.0
         self.collectionView.backgroundColor = UIColor.whiteColor()
+        self.loadingView.frame = self.view.frame
         self.navigationController?.toolbarHidden = true
+        self.title = "GIF Player"
         
         // We are doing the fetch request manually rather than using the NSFetchResultsController manage this for us as in TaskIt mainly to practice both ways
         // Request all the FeedItems we have saved
@@ -66,6 +79,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             println("Not Determined")
         }
         
+        self.setupLoadingScreen()
+        
         // Fetch the items from the photo library
         self.fetchGifItemsFromLibrary()
     }
@@ -81,7 +96,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         if segue.identifier == "toMainVC" {
             var mainVC:ViewController = segue.destinationViewController as ViewController
             mainVC.thisGIFItem = sender as GIFItem
-            self.navigationController?.toolbarHidden = false
+            self.navigationController?.toolbarHidden = true
         }
     }
     
@@ -133,6 +148,31 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         return cell
     }
     
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        
+        var size:CGSize
+        
+        if self.view.frame.width == 320 {
+            // iPhone 5/5C/5S
+            let width = (self.view.frame.width + 5) / 4
+            size = CGSizeMake(width, width)
+        } else if self.view.frame.width == 375 {
+            // iPhone 6
+            let width = (self.view.frame.width + 5) / 4
+            size = CGSizeMake(width, width)
+        } else if self.view.frame.width == 414 {
+            // iPhone 6 Plus
+            let width = (self.view.frame.width - 4) / 5
+            size = CGSizeMake(width, width)
+        } else {
+            // iPad
+            let width = (self.view.frame.width - 6) / 6
+            size = CGSizeMake(width, width)
+        }
+        
+        return size
+    }
+    
     // MARK: UICollectionViewDelegate
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
@@ -153,6 +193,21 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    // MARK: ADBannerViewDelegate
+    
+    func bannerViewDidLoadAd(banner: ADBannerView!) {
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            self.iAdBanner.alpha = 1.0
+        })
+    }
+    
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        println("CollectionVC's iAd Error: \(error)")
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            self.iAdBanner.alpha = 0.0
+        })
+    }
+    
     // MARK: Helpers
     
     func getImageName(url: String) -> String {
@@ -166,6 +221,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     func fetchGifItemsFromLibrary() {
         
+        // Start Loading
+//        self.shouldBeLoading(true)
+        
         var asset = PHAsset()
         
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
@@ -177,6 +235,10 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             for var indx:Int = 0; indx < fetchResult.count; indx++ {
                 asset = fetchResult[indx] as PHAsset
                 self.saveGIFImageAsset(asset)
+                println(indx)
+//                if indx == (fetchResult.count - 1) {
+//                    self.shouldBeLoading(false)
+//                }
             }
             
             }, completionHandler: { (success, error) -> Void in
@@ -222,7 +284,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                     gifItem.thumbImage = imageData
                     gifItem.selectedFromPicker = false
                     gifItem.imageName = imageName
-                    gifItem.imageCaption = "Fetch Test Caption"
+                    gifItem.imageCaption = imageName
                     (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
                     
                     // Add the gifItem to the gifArray so the user can see the item without having to quit and restart the application
@@ -235,6 +297,90 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                     println("NAY")
                 }
             } else { println("Exists") }
+
         })
     }
+    
+    func setupLoadingScreen() {
+            
+        // Only apply the blur if the user hasn't disabled transparency effects
+        if !UIAccessibilityIsReduceTransparencyEnabled() {
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
+            let blurEffectView = UIVisualEffectView(effect: blurEffect)
+            blurEffectView.frame = view.bounds //view is self.view in a UIViewController
+            self.loadingView.addSubview(blurEffectView)
+            //if you have more UIViews on screen, use insertSubview:belowSubview: to place it underneath the lowest view
+            
+            //add auto layout constraints so that the blur fills the screen upon rotating device
+            blurEffectView.setTranslatesAutoresizingMaskIntoConstraints(false)
+            self.loadingView.addConstraint(NSLayoutConstraint(item: blurEffectView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: self.loadingView, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
+            self.loadingView.addConstraint(NSLayoutConstraint(item: blurEffectView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: self.loadingView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+            self.loadingView.addConstraint(NSLayoutConstraint(item: blurEffectView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: self.loadingView, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
+            self.loadingView.addConstraint(NSLayoutConstraint(item: blurEffectView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: self.loadingView, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
+        } else {
+            self.loadingView.backgroundColor = UIColor.blackColor()
+        }
+        
+        // Add the view on top of the navigation controller
+        self.navigationController?.view.addSubview(self.loadingView)
+        
+        // Create the label
+        self.updatingLabel.font = UIFont(name: "HelveticaNeue-Light", size: 24)
+        self.updatingLabel.textColor = UIColor.whiteColor()
+        self.updatingLabel.text = "Updating Library..."
+        self.updatingLabel.sizeToFit()
+        
+        // Create the imageView
+        self.loadingImageView.image = UIImage(named: "Loading 1")
+        self.loadingImageView.sizeToFit()
+        
+        // Position the label and imageView
+        var yPos = self.updatingLabel.frame.size.height + 22 + self.loadingImageView.frame.size.height
+        self.updatingLabel.frame.origin = CGPointMake(self.view.frame.size.width * 0.5 - self.updatingLabel.frame.size.width * 0.5,
+                                                 self.view.frame.size.height * 0.5 - yPos * 0.5)
+        self.loadingImageView.frame.origin = CGPointMake(self.view.frame.size.width * 0.5 - self.loadingImageView.frame.size.width * 0.5,
+                                                         self.updatingLabel.frame.origin.y + self.updatingLabel.frame.size.height + 22)
+        
+        // Add them to the view
+        self.loadingView.addSubview(updatingLabel)
+        self.loadingView.addSubview(loadingImageView)
+        
+        // Setup the loading animation
+        var loadingImages:Array<UIImage> = []
+        for (var i = 1; i < 10; i++) {
+            loadingImages.append(UIImage(named: "Loading \(i)")!)
+        }
+        self.loadingImageView.animationImages = loadingImages
+        self.loadingImageView.animationDuration = 0.45
+        self.loadingImageView.animationRepeatCount = 0
+        
+//        self.testButton.frame = CGRectMake(150, 400, 50, 50)
+//        self.testButton.backgroundColor = UIColor.redColor()
+//        self.testButton.addTarget(self, action: "changeLoadingView", forControlEvents: UIControlEvents.TouchUpInside)
+//        self.loadingView.addSubview(self.testButton)
+        
+        self.loadingView.hidden = true
+    }
+    
+    func shouldBeLoading(isLoading: Bool) {
+        if isLoading == true {
+            self.loadingView.hidden = false
+            self.loadingImageView.startAnimating()
+        } else {
+            self.loadingView.hidden = true
+            self.loadingImageView.stopAnimating()
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -9,8 +9,9 @@
 import UIKit
 import MobileCoreServices
 import Photos
+import iAd
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ADBannerViewDelegate {
     
     // MARK: - PROPERTIES
     
@@ -18,6 +19,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBOutlet weak var gifImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var iAdBanner: ADBannerView!
     
     // MARK: Variables
     
@@ -31,13 +33,34 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        self.iAdBanner.delegate = self
+        self.iAdBanner.alpha = 0.0
+        
         self.fetchImageAssetWithURLString(self.thisGIFItem.imageURL)
+        self.title = self.thisGIFItem.imageCaption
         self.titleLabel.text = self.thisGIFItem.imageCaption
+        
+        self.titleLabel.hidden = true
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    // MARK: ADBannerViewDelegate
+    
+    func bannerViewDidLoadAd(banner: ADBannerView!) {
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            self.iAdBanner.alpha = 1.0
+        })
+    }
+    
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        println("ViewController's iAd Error: \(error)")
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            self.iAdBanner.alpha = 0.0
+        })
     }
     
     // MARK: Image Asset Handlers

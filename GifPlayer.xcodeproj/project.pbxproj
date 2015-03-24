@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D45E86291AC11F2800C60497 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45E86281AC11F2800C60497 /* SettingsViewController.swift */; };
+		D45E862B1AC1263700C60497 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D45E862A1AC1263700C60497 /* iAd.framework */; };
 		D46FF61C1ABC0202008273F0 /* GIFItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46FF61B1ABC0202008273F0 /* GIFItem.swift */; };
 		D484BB441AAE6ACE00A97FAC /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */; };
 		D48C9E211ABFEA770049FA5F /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D48C9E201ABFEA770049FA5F /* Icon.png */; };
@@ -33,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D45E86281AC11F2800C60497 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		D45E862A1AC1263700C60497 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		D46FF61B1ABC0202008273F0 /* GIFItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GIFItem.swift; path = ../GIFItem.swift; sourceTree = "<group>"; };
 		D484BB411AAE6ACE00A97FAC /* GifPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GifPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		D484BB421AAE6ACE00A97FAC /* UIImage+animatedGIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+animatedGIF.h"; sourceTree = "<group>"; };
@@ -59,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D45E862B1AC1263700C60497 /* iAd.framework in Frameworks */,
 				D4D4C0961AB14F9500DD4D01 /* Photos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,6 +104,7 @@
 				D484BB431AAE6ACE00A97FAC /* UIImage+animatedGIF.m */,
 				D4E58D041AAE65A000A6214E /* ViewController.swift */,
 				D4E689611AB24EA80019FABD /* CollectionViewController.swift */,
+				D45E86281AC11F2800C60497 /* SettingsViewController.swift */,
 				D4E689671AB2543A0019FABD /* GIFCollectionViewCell.swift */,
 				D4B47F671ABB84A000899EFF /* Main.storyboard */,
 				D4E58D091AAE65A000A6214E /* Images.xcassets */,
@@ -113,6 +119,7 @@
 		D4E58CFD1AAE65A000A6214E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D45E862A1AC1263700C60497 /* iAd.framework */,
 				D4D4C0951AB14F9500DD4D01 /* Photos.framework */,
 				D4E689661AB250760019FABD /* Images */,
 				D4E58CFE1AAE65A000A6214E /* Info.plist */,
@@ -263,6 +270,7 @@
 				D4E58D031AAE65A000A6214E /* GifPlayer.xcdatamodeld in Sources */,
 				D4E689681AB2543A0019FABD /* GIFCollectionViewCell.swift in Sources */,
 				D4E689621AB24EA80019FABD /* CollectionViewController.swift in Sources */,
+				D45E86291AC11F2800C60497 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
