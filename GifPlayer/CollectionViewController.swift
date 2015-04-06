@@ -26,6 +26,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // Arrays
     // We use 'AnyObject' because when we 'executeFetchRequest' in viewDidLoad, we get an array with AnyObject instances. We are doing the fetch request manually rather than using the NSFetchResultsController manage this for us as in TaskIt mainly to practice both ways
     var gifArray:[AnyObject] = []
+    var gifArrayIndex:Int!
     var loadingImageView = UIImageView()
     var updatingLabel = UILabel()
     var testButton = UIButton()
@@ -80,9 +81,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         }
         
         self.setupLoadingScreen()
+        self.shouldBeLoading(true)
         
         // Fetch the items from the photo library
         self.fetchGifItemsFromLibrary()
+        self.shouldBeLoading(false)
     }
     
     override func didReceiveMemoryWarning() {
@@ -95,7 +98,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "toMainVC" {
             var mainVC:ViewController = segue.destinationViewController as ViewController
-            mainVC.thisGIFItem = sender as GIFItem
+            mainVC.gifArray = sender as Array<GIFItem>
+            mainVC.gifArrayIndex = self.gifArrayIndex
             self.navigationController?.toolbarHidden = true
         }
     }
@@ -176,8 +180,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // MARK: UICollectionViewDelegate
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let thisItem = self.gifArray[indexPath.row] as GIFItem
-        self.performSegueWithIdentifier("toMainVC", sender: thisItem)
+        let gifItemArray = self.gifArray
+        self.gifArrayIndex = indexPath.row
+        self.performSegueWithIdentifier("toMainVC", sender: gifItemArray)
+        
+//        self.deleteManagedObject(self.gifArray[indexPath.row] as GIFItem)
     }
     
     // MARK: UIImagePickerControllerDelegaate
@@ -222,7 +229,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     func fetchGifItemsFromLibrary() {
         
         // Start Loading
-//        self.shouldBeLoading(true)
         
         var asset = PHAsset()
         
@@ -235,10 +241,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             for var indx:Int = 0; indx < fetchResult.count; indx++ {
                 asset = fetchResult[indx] as PHAsset
                 self.saveGIFImageAsset(asset)
-                println(indx)
-//                if indx == (fetchResult.count - 1) {
-//                    self.shouldBeLoading(false)
-//                }
             }
             
             }, completionHandler: { (success, error) -> Void in
@@ -250,6 +252,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         let imageRequestOptions = PHImageRequestOptions()
         // When set to false it loads a low-quality image first if there is no high res available in the cache and then runs the completion handler from 'requestImageDataForAsset' again when it can retrieve the high res image. It is faster
         imageRequestOptions.synchronous = false
+        
+        println(asset.localIdentifier)
         
         // Get the data of the asset that was passed. In here we need to save the imageData and the url returned on the info dictionarry
         PHImageManager.defaultManager().requestImageDataForAsset(asset, options: imageRequestOptions, resultHandler: { (imageData, dataUTI, orientation, info) -> Void in
@@ -281,10 +285,13 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                     
                     // Save the required information
                     gifItem.imageURL = url
+                    gifItem.imageID = asset.localIdentifier
                     gifItem.thumbImage = imageData
-                    gifItem.selectedFromPicker = false
+                    gifItem.date = asset.creationDate
+//                    gifItem.selectedFromPicker = false
                     gifItem.imageName = imageName
                     gifItem.imageCaption = imageName
+                    
                     (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
                     
                     // Add the gifItem to the gifArray so the user can see the item without having to quit and restart the application
@@ -301,8 +308,20 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         })
     }
     
+    func deleteManagedObject(gifItem: GIFItem) {
+        // Get the managedObjectContext
+        let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+        
+        self.gifArray.removeAtIndex(1)
+        
+        managedObjectContext?.deleteObject(gifItem)
+        
+        (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
+        self.collectionView.reloadData()
+    }
+    
     func setupLoadingScreen() {
-            
+        
         // Only apply the blur if the user hasn't disabled transparency effects
         if !UIAccessibilityIsReduceTransparencyEnabled() {
             let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
@@ -337,7 +356,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         // Position the label and imageView
         var yPos = self.updatingLabel.frame.size.height + 22 + self.loadingImageView.frame.size.height
         self.updatingLabel.frame.origin = CGPointMake(self.view.frame.size.width * 0.5 - self.updatingLabel.frame.size.width * 0.5,
-                                                 self.view.frame.size.height * 0.5 - yPos * 0.5)
+                                                      self.view.frame.size.height * 0.5 - yPos * 0.5)
         self.loadingImageView.frame.origin = CGPointMake(self.view.frame.size.width * 0.5 - self.loadingImageView.frame.size.width * 0.5,
                                                          self.updatingLabel.frame.origin.y + self.updatingLabel.frame.size.height + 22)
         

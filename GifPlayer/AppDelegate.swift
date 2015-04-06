@@ -17,6 +17,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        if NSUserDefaults.standardUserDefaults().boolForKey("HasLoadedBefore") == false {
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasLoadedBefore")
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: kRefreshLibraryOnLaunch)
+            NSUserDefaults.standardUserDefaults().setBool(false, forKey: kImportAllPhotosFromLibrary)
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: kSeparateSectionsByWeek)
+        }
         return true
     }
 

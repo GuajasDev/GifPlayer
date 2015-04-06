@@ -9,9 +9,24 @@
 import UIKit
 import iAd
 
+let kRefreshLibraryOnLaunch = "RefreshLibraryOnLaunch"
+let kImportAllPhotosFromLibrary = "ImportAllPhotosFromLibrary"
+let kSeparateSectionsByWeek = "SeparateSectionsByWeek"
+
 class SettingsViewController: UIViewController, ADBannerViewDelegate {
+    
+    // MARK: - PROPERTIES
+    
+    // MARK: IBOutlets
 
     @IBOutlet weak var iAdBanner: ADBannerView!
+    @IBOutlet weak var refreshLibrarySwitch: UISwitch!
+    @IBOutlet weak var importAllPhotosSwitch: UISwitch!
+    @IBOutlet weak var separateSectionsSwitch: UISwitch!
+    
+    // MARK: Variables
+    
+    // MARK: - BODY
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +34,10 @@ class SettingsViewController: UIViewController, ADBannerViewDelegate {
         
         self.iAdBanner.delegate = self
         self.iAdBanner.alpha = 0.0
+        
+        self.refreshLibrarySwitch.setOn(NSUserDefaults.standardUserDefaults().boolForKey(kRefreshLibraryOnLaunch), animated: false)
+        self.importAllPhotosSwitch.setOn(NSUserDefaults.standardUserDefaults().boolForKey(kImportAllPhotosFromLibrary), animated: false)
+        self.separateSectionsSwitch.setOn(NSUserDefaults.standardUserDefaults().boolForKey(kSeparateSectionsByWeek), animated: false)
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,6 +58,20 @@ class SettingsViewController: UIViewController, ADBannerViewDelegate {
         UIView.animateWithDuration(0.5, animations: { () -> Void in
             self.iAdBanner.alpha = 0.0
         })
+    }
+    
+    // MARK: IBActions
+    
+    @IBAction func refreshLibrarySwitchDidChange(sender: UISwitch) {
+        NSUserDefaults.standardUserDefaults().setBool(sender.enabled, forKey: kRefreshLibraryOnLaunch)
+    }
+    
+    @IBAction func importAllPhotosSwitchDidChange(sender: UISwitch) {
+        NSUserDefaults.standardUserDefaults().setBool(sender.enabled, forKey: kImportAllPhotosFromLibrary)
+    }
+    
+    @IBAction func separateSectionsSwitchDidChange(sender: UISwitch) {
+        NSUserDefaults.standardUserDefaults().setBool(sender.enabled, forKey: kSeparateSectionsByWeek)
     }
 
 }
