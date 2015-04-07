@@ -24,17 +24,16 @@ class SettingsViewController: UIViewController, ADBannerViewDelegate {
     @IBOutlet weak var importAllPhotosSwitch: UISwitch!
     @IBOutlet weak var separateSectionsSwitch: UISwitch!
     
-    // MARK: Variables
-    
     // MARK: - BODY
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
+        // Setup the iAdBanner
         self.iAdBanner.delegate = self
         self.iAdBanner.alpha = 0.0
         
+        // Set the values (saved in NSUserDefaults) for the switches
         self.refreshLibrarySwitch.setOn(NSUserDefaults.standardUserDefaults().boolForKey(kRefreshLibraryOnLaunch), animated: false)
         self.importAllPhotosSwitch.setOn(NSUserDefaults.standardUserDefaults().boolForKey(kImportAllPhotosFromLibrary), animated: false)
         self.separateSectionsSwitch.setOn(NSUserDefaults.standardUserDefaults().boolForKey(kSeparateSectionsByWeek), animated: false)
@@ -73,5 +72,4 @@ class SettingsViewController: UIViewController, ADBannerViewDelegate {
     @IBAction func separateSectionsSwitchDidChange(sender: UISwitch) {
         NSUserDefaults.standardUserDefaults().setBool(sender.enabled, forKey: kSeparateSectionsByWeek)
     }
-
 }

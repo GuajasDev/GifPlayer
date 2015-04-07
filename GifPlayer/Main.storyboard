@@ -17,12 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" pagingEnabled="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gBl-Ig-w2z">
-                                <rect key="frame" x="-4" y="0.0" width="608" height="506"/>
-                                <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="4gb-Dc-fif"/>
-                                </connections>
-                            </scrollView>
                             <adBannerView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="ZEO-oh-IH2">
                                 <rect key="frame" x="140" y="506" width="320" height="50"/>
                             </adBannerView>
@@ -42,9 +36,6 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="3p5-RH-K9v">
-                                <rect key="frame" x="-4" y="430" width="608" height="37"/>
-                            </pageControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -53,9 +44,6 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ZEO-oh-IH2" secondAttribute="bottom" id="CXe-cI-BhO"/>
                             <constraint firstItem="ZEO-oh-IH2" firstAttribute="top" secondItem="0PZ-We-DPX" secondAttribute="bottom" id="Fxj-Ep-1G7"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0PZ-We-DPX" secondAttribute="trailing" constant="-20" id="IYf-wJ-KfC"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="3p5-RH-K9v" secondAttribute="bottom" constant="89" id="W0B-ZR-cBe"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="3p5-RH-K9v" secondAttribute="trailing" constant="-20" id="oba-aT-Vyd"/>
-                            <constraint firstItem="3p5-RH-K9v" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="qYJ-zt-8PH"/>
                             <constraint firstAttribute="centerX" secondItem="ZEO-oh-IH2" secondAttribute="centerX" id="r5f-1A-Aif"/>
                         </constraints>
                         <connections>
@@ -63,11 +51,17 @@
                         </connections>
                     </view>
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="U0R-bo-Ezo">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="Gs8-7K-yG3">
+                            <connections>
+                                <action selector="editBarButtonItemTapped:" destination="BYZ-38-t0r" id="mjU-pz-AZa"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="iAdBanner" destination="ZEO-oh-IH2" id="m7c-lG-AcC"/>
-                        <outlet property="pageControl" destination="3p5-RH-K9v" id="lBZ-Nj-j3S"/>
-                        <outlet property="scrollView" destination="gBl-Ig-w2z" id="lQT-1A-hCO"/>
+                        <outlet property="toolbar" destination="0PZ-We-DPX" id="Mcw-jK-34l"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -256,7 +250,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="HU6-d9-Qz6">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="HU6-d9-Qz6">
                                 <rect key="frame" x="-4" y="0.0" width="608" height="549"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="fHl-PJ-wyS">
                                     <size key="itemSize" width="93" height="93"/>
