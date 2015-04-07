@@ -287,12 +287,15 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             
             // Initialise a boolean to check if the image already exists in CoreData and another to check if the user has previously deleted the asset
             var existsAlready = false
+            var index:Int?
             var previouslyDeleted = false
             
             // Loop through all the saved assets. If the name of the asset that was passed equals one that is already saved then it exists already and it is not saved again
             for var i = 0; i < self.gifArray.count; i++ {
                 if asset.localIdentifier == (self.gifArray[i] as GIFItem).imageID {
                     existsAlready = true
+                    index = i
+                    break
                 }
             }
             
@@ -337,12 +340,39 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                         self.gifArray.append(gifItem)
                         self.collectionView.reloadData()
                         
-                    } else { println("Not a GIF") }
-                    
-                } else { println("Previously Deleted") }
+                    } else {
+                        // Not a GIF Image
+                        
+                        if fromPicker == true {
+                            // It was selected from the imagePickerController
+                            
+                            var alertController = UIAlertController(title: "Not A GIF", message: "The image you selected does not have a GIF format.\nIf you want to add images that are not GIFs please go to the Settings and enable the option", preferredStyle: UIAlertControllerStyle.Alert)
+                            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                            
+                            self.presentViewController(alertController, animated: true, completion: nil)
+                        }
+                    }
+                } // previouslyDeleted
                 
-            } else { println("Exists") }
-
+            } else {
+                // It is already saved as a GIFItem
+                if fromPicker == true {
+                    // It was selected from the imagePickerController
+                    
+                    // 'index' is saved when the picked image equals the local identifier of a GIFItem, so if it is not nil ask the user if he/she wants to go directly to see the image
+                    if index != nil {
+                        var alertController = UIAlertController(title: "Already Exists", message: "The image you selected already exists.\nDo you want to see it?", preferredStyle: UIAlertControllerStyle.Alert)
+                        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
+                        alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (alertAction) -> Void in
+                            // The user wants to see the image, so segue to the MainVC and save the index of the selected image
+                            self.gifArrayIndex = index
+                            self.performSegueWithIdentifier("toMainVC", sender: self.gifArray)
+                        }))
+                        
+                        self.presentViewController(alertController, animated: true, completion: nil)
+                    }
+                }
+            }
         })
     }
     
@@ -416,15 +446,3 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
